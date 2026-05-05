@@ -1,0 +1,123 @@
+﻿> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:processDebugGoogleServices UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+
+> Task :app:compileDebugJavaWithJavac
+.\gradlew : D:\pushkar 
+given project\working proj
+ect\master2\app\src\main\j
+ava\com\example\master2\Ch
+ildDashboardActivity.java:
+1038: error: <anonymous co
+m.example.master2.ChildDas
+hboardActivity$6> is not 
+abstract and does not 
+override abstract method o
+nCancelled(DatabaseError) 
+in ValueEventListener
+At line:1 char:1
++ .\gradlew assembleDebug 
+2>&1 | Out-File -FilePath 
+"build_output2.txt" ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
+    + CategoryInfo        
+      : NotSpecified: (D  
+  :\pushkar give...ueEv   
+ entListener:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+                .addListen
+erForSingleValueEvent(new 
+ValueEventListener() {
+                          
+                          
+                     ^
+Note: Some input files 
+use or override a 
+deprecated API.
+Note: Recompile with 
+-Xlint:deprecation for 
+details.
+Note: Some input files 
+use unchecked or unsafe 
+operations.
+Note: Recompile with 
+-Xlint:unchecked for 
+details.
+1 error
+
+> Task :app:compileDebugJavaWithJavac FAILED
+
+[Incubating] Problems report is available at: file:///D:/pushkar%20given%20project/working%20project/master2/build/reports/problems/problems-report.html
+
+FAILURE: Build failed 
+with an exception.
+
+* What went wrong:
+Execution failed for task 
+':app:compileDebugJavaWith
+Javac'.
+> Compilation failed; see 
+the compiler output below.
+  Note: Recompile with 
+-Xlint:deprecation for 
+details.
+  D:\pushkar given 
+project\working project\ma
+ster2\app\src\main\java\co
+m\example\master2\ChildDas
+hboardActivity.java:1038: 
+error: <anonymous com.exam
+ple.master2.ChildDashboard
+Activity$6> is not 
+abstract and does not 
+override abstract method o
+nCancelled(DatabaseError) 
+in ValueEventListener
+                  .addList
+enerForSingleValueEvent(ne
+w ValueEventListener() {
+                          
+                          
+                       ^
+  Note: Recompile with 
+-Xlint:unchecked for 
+details.
+  Note: Some input files 
+use or override a 
+deprecated API.
+  Note: Some input files 
+use unchecked or unsafe 
+operations.
+  1 error
+
+* Try:
+> Check your code and 
+dependencies to fix the 
+compilation error(s)
+> Run with --scan to get 
+full insights.
+
+BUILD FAILED in 4s
+18 actionable tasks: 1 executed, 17 up-to-date

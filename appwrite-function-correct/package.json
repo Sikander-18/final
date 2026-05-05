@@ -1,0 +1,24 @@
+{
+  "name": "family-guard-email-function",
+  "version": "1.0.0",
+  "description": "Family Guard OTP Email Function for Appwrite",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.7"
+  },
+  "keywords": [
+    "appwrite",
+    "function",
+    "email",
+    "otp",
+    "nodejs"
+  ],
+  "author": "Family Guard",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "send-otp-email",
+  "version": "1.0.0",
+  "description": "Appwrite function to send OTP emails for Sentinel app",
+  "main": "src/main.js",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  },
+  "keywords": ["appwrite", "function", "otp", "email", "sentinel"],
+  "author": "Sentinel Team"
+}

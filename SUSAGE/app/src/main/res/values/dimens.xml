@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Standard margins and paddings -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    
+    <!-- Card dimensions -->
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    
+    <!-- Icon sizes -->
+    <dimen name="icon_size_sm">24dp</dimen>
+    <dimen name="icon_size_md">40dp</dimen>
+    <dimen name="icon_size_lg">48dp</dimen>
+    
+    <!-- App icon in list -->
+    <dimen name="app_icon_size">40dp</dimen>
+    <dimen name="app_icon_corner_radius">10dp</dimen>
+    
+    <!-- Chart dimensions -->
+    <dimen name="chart_height">180dp</dimen>
+    <dimen name="chart_bar_width">24dp</dimen>
+    
+    <!-- Progress bar -->
+    <dimen name="progress_bar_height">8dp</dimen>
+    <dimen name="progress_bar_corner_radius">4dp</dimen>
+    
+    <!-- Text sizes -->
+    <dimen name="text_size_large">32sp</dimen>
+    <dimen name="text_size_title">18sp</dimen>
+    <dimen name="text_size_body">14sp</dimen>
+    <dimen name="text_size_caption">12sp</dimen>
+</resources>
