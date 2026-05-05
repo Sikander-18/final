@@ -243,7 +243,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- Sagar - _Initial work_
+-Monarch Labs _By Team of Monarch Labs_
 
 ---
 
