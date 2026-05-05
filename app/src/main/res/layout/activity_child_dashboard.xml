@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/bg_dashboard_gradient">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/homeContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:overScrollMode="ifContentScrolls"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="100dp"
+            android:clipToPadding="false">
+
+            <!-- Status Bar Spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+            <!-- Header Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_shield_3d"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dashboard"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/neutral_900"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your protection status"
+                        android:textSize="14sp"
+                        android:textColor="@color/neutral_600"
+                        android:fontFamily="sans-serif" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Connection Status Card (Glass Effect) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_white_rounded">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔗"
+                            android:textSize="22sp"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvParentName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not Connected"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/modern_blue_600"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Connection Status"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:textColor="@color/neutral_600" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_white_rounded"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:background="@drawable/indicator_green"
+                        android:backgroundTint="#22C55E"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvConnectionStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Online &amp; Protected"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/neutral_900" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Usage Limiter Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/usageLimiterCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Daily Limit"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/neutral_900" />
+
+                        <View
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/bg_dashboard_gradient"
+                            android:backgroundTint="#EEF2FF" />
+                        <!-- Icon overlay -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⏳"
+                            android:textSize="16sp"
+                            android:layout_gravity="center"
+                            android:translationY="-26dp" 
+                            android:translationX="310dp"/> 
+                            <!-- Hacky translation, better to use FrameLayout. Cleaning up below -->
+                    </LinearLayout>
+                   
+                    <!-- Clean Timer Display -->
+                    <TextView
+                        android:id="@+id/tvTimerDisplay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="00:00:00"
+                        android:textSize="48sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/modern_blue_600"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvTimerStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Time Remaining"
+                        android:textSize="14sp"
+                        android:textColor="@color/neutral_600"
+                        android:gravity="center"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Selected Apps Section -->
+                    <LinearLayout
+                        android:id="@+id/selectedAppsInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_dashboard_gradient"
+                        android:backgroundTint="#F8FAFC"
+                        android:padding="16dp"
+                        android:visibility="gone">
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Restricted Apps"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/neutral_600"
+                            android:layout_marginBottom="4dp"/>
+                            
+                        <TextView
+                            android:id="@+id/tvSelectedApps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Loading..."
+                            android:textSize="14sp"
+                            android:textColor="@color/neutral_900"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Active App Timers Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/activeTimersCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="App Timers"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/neutral_900"
+                        android:layout_marginBottom="16dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvActiveTimers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Usage Data Button (Primary Action) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewUsageData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/modern_blue_600"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                android:layout_marginBottom="32dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_white_rounded"
+                        android:backgroundTint="#30FFFFFF">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📊"
+                            android:textSize="22sp"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View Usage Data"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Check your screen time stats"
+                            android:textSize="13sp"
+                            android:textColor="#CCFFFFFF" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@android:color/white" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Important Notice (Clean) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:orientation="vertical"
+                android:padding="20dp">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp"/>
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Important"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#B45309"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="If the parent app is deleted, reinstall this child app to restore connection."
+                    android:textSize="13sp"
+                    android:textColor="#B45309"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+            <!-- Debug Buttons (Hidden) -->
+             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <Button android:id="@+id/btnDebugSession" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <Button android:id="@+id/btnRefreshLogout" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <Button android:id="@+id/btnTestLogout" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Hidden Includes to preserve IDs -->
+    <include
+        android:id="@+id/settingsContent"
+        layout="@layout/fragment_settings"
+        android:visibility="gone" />
+    <include
+        android:id="@+id/todoContent"
+        layout="@layout/layout_todo_list"
+        android:visibility="gone" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:labelVisibilityMode="labeled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

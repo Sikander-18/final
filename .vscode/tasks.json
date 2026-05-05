@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Android App - Loading Screen Implementation",
+			"type": "shell",
+			"command": "cd /d \"d:\\pushkar given project\\master2\\master2\" && .\\gradlew assembleDebug",
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gradle"
+			]
+		},
+		{
+			"label": "Build Android App (PowerShell-safe)",
+			"type": "shell",
+			"command": "Set-Location -Path 'd:\\pushkar given project\\new full working\\master2\\master2'; ./gradlew.bat assembleDebug",
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

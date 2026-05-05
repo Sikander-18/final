@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Mode Color Overrides -->
+    
+    <!-- Surface colors for dark mode -->
+    <color name="surface">#1F2937</color>
+    <color name="surface_variant">#111827</color>
+    <color name="surface_container">#374151</color>
+    <color name="surface_container_high">#4B5563</color>
+    <color name="surface_dim">#0F172A</color>
+    <color name="surface_bright">#1E293B</color>
+    
+    <!-- Card backgrounds -->
+    <color name="card_background">#1F2937</color>
+    <color name="card_surface">#111827</color>
+    <color name="card_border">#374151</color>
+    
+    <!-- Text colors for dark mode -->
+    <color name="text_primary">#F9FAFB</color>
+    <color name="text_secondary">#D1D5DB</color>
+    <color name="text_tertiary">#9CA3AF</color>
+    <color name="text_on_surface">#F9FAFB</color>
+    
+    <!-- Border colors -->
+    <color name="border_primary">#374151</color>
+    <color name="border_secondary">#4B5563</color>
+    
+    <!-- Divider -->
+    <color name="divider">#374151</color>
+    
+    <!-- Bottom Navigation -->
+    <color name="bottom_nav_background">#111827</color>
+    
+    <!-- Button secondary -->
+    <color name="button_secondary">#374151</color>
+    <color name="button_secondary_pressed">#4B5563</color>
+    
+    <!-- Ripple effects -->
+    <color name="ripple_surface">#1AF9FAFB</color>
+</resources>

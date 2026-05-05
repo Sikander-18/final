@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
+    android:layout_marginBottom="8dp">
+
+    <!-- App Icon Container -->
+    <LinearLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="#F8FAFC"
+        android:gravity="center"
+        android:layout_marginEnd="16dp">
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_foreground" />
+
+    </LinearLayout>
+
+    <!-- App Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="App Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#171717"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvUsageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="22 minutes"
+            android:textSize="14sp"
+            android:textColor="#525252"
+            android:fontFamily="sans-serif" />
+
+    </LinearLayout>
+
+    <!-- Usage Stats -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <!-- Usage Bar -->
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="4dp"
+            android:background="#E5E5E5"
+            android:layout_marginBottom="8dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="30"
+                android:background="#2563EB" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="70" />
+
+        </LinearLayout>
+
+        <!-- Timer Icon -->
+        <LinearLayout
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="#EBF4FF"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/ivTimer"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_timer_24"
+                android:tint="#2563EB" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

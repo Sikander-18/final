@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-policies>
+        <!-- Required for keeping services alive -->
+        <force-lock />
+        
+        <!-- Prevent tampering -->
+        <wipe-data />
+        
+        <!-- Reset password if needed -->
+        <reset-password />
+        
+        <!-- Watch login attempts -->
+        <watch-login />
+        
+        <!-- Disable camera if needed for focus mode -->
+        <disable-camera />
+        
+        <!-- Expire password (for parental control features) -->
+        <expire-password />
+        
+        <!-- Set password quality requirements -->
+        <limit-password />
+        
+        <!-- Encrypt storage -->
+        <encrypted-storage />
+        
+        <!-- Disable keyguard features -->
+        <disable-keyguard-features />
+    </uses-policies>
+</device-admin>
+

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.gradlew compileDebugJavaWithJavac)",
+      "Bash(./gradlew:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(.gradlew:*)",
+      "Bash(gradlew assembleDebug:*)",
+      "Bash(find:*)",
+      "Bash(gradlew.bat compileDebugJavaWithJavac:*)",
+      "Bash(\"gradlew.bat\" compileDebugJavaWithJavac)",
+      "Bash(rm:*)",
+      "Bash(gradlew.bat assembleDebug:*)",
+      "Bash(cmd /c:*)",
+      "Bash(true)",
+      "Bash(timeout:*)",
+      "Bash(tail:*)",
+      "Bash(gradlew:*)"
+    ],
+    "deny": []
+  }
+}

@@ -1,0 +1,334 @@
+*/
+public class AccurateUsageTracker {
+    private static final String TAG = "AccurateUsageTracker";
+
+    private Context context;
+    private UsageStatsManager usageStatsManager;
+    private Handler updateHandler;
+    private Runnable updateRunnable;
+    private String deviceId;
+
+    // Real-time tracking data
+    private final Map<String, Long> appUsageTimes = new ConcurrentHashMap<>();
+    private final Map<String, Long> appSessionStartTimes = new ConcurrentHashMap<>();
+    private final Map<String, String> appNames = new ConcurrentHashMap<>();
+    private String currentForegroundApp = null;
+    private long currentSessionStartTime = 0;
+
+    // Tracking intervals
+    private static final long UPDATE_INTERVAL_MS = 1000; // 1 second updates like Digital Wellbeing
+    private static final long FIREBASE_SYNC_INTERVAL_MS = 5000; // Sync to Firebase every 5 seconds
+
+    // Firebase references
+    private DatabaseReference usageRef;
+    private long lastFirebaseSync = 0;
+
+    // System apps to exclude (same as Digital Wellbeing)
+    private static final Set<String> SYSTEM_PACKAGES_TO_EXCLUDE = new HashSet<>(Arrays.asList(
+            "android", "com.android.systemui", "com.android.launcher3",
+            "com.miui.home", "com.huawei.android.launcher", "com.oneplus.launcher",
+            "com.google.android.inputmethod.latin", "com.android.settings",
+            "com.android.chrome", "com.google.android.gms", "com.example.master2"));
+
+    public AccurateUsageTracker(Context context, String deviceId) {
+        this.context = context;
+        this.deviceId = deviceId;
+        this.usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        this.updateHandler = new Handler(Looper.getMainLooper());
+
+        // Initialize Firebase reference
+        this.usageRef = FirebaseDatabase.getInstance()
+                .getReference("usage_snapshots")
+                .child(deviceId)
+                .child("latest");
+
+        Log.d(TAG, "✅ AccurateUsageTracker initialized for device: " + deviceId);
+    }
+
+    /**
+     * Start accurate usage tracking
+     */
+    public void startTracking() {
+        Log.d(TAG, "🚀 Starting accurate usage tracking");
+
+        // Get baseline usage data for today
+        initializeTodaysUsage();
+
+        // Start real-time monitoring
+        startRealTimeTracking();
+
+        Log.d(TAG, "✅ Accurate usage tracking started");
+    }
+
+    /**
+     * Initialize today's usage data from UsageStats
+     */
+    private void initializeTodaysUsage() {
+        Log.d(TAG, "🔄 Initializing today's usage baseline");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startOfToday = calendar.getTimeInMillis();
+        long now = System.currentTimeMillis();
+
+        try {
+            // Get usage stats for today
+            Map<String, UsageStats> usageStatsMap = usageStatsManager.queryAndAggregateUsageStats(
+                    startOfToday, now);
+
+            int appCount = 0;
+            for (Map.Entry<String, UsageStats> entry : usageStatsMap.entrySet()) {
+                String packageName = entry.getKey();
+                UsageStats stats = entry.getValue();
+
+                if (shouldTrackApp(packageName) && stats.getTotalTimeInForeground() > 0) {
+                    appUsageTimes.put(packageName, stats.getTotalTimeInForeground());
+                    cacheAppName(packageName);
+                    appCount++;
+                }
+            }
+
+            Log.d(TAG, "📊 Initialized baseline for " + appCount + " apps");
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error initializing baseline usage: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Start real-time usage tracking using UsageEvents
+     */
+    private void startRealTimeTracking() {
+        updateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateCurrentUsageFromEvents();
+                    syncToFirebaseIfNeeded();
+
+                    // Schedule next update
+                    updateHandler.postDelayed(this, UPDATE_INTERVAL_MS);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "❌ Error in real-time tracking: " + e.getMessage());
+                    // Restart after error
+                    updateHandler.postDelayed(this, UPDATE_INTERVAL_MS * 2);
+                }
+            }
+        };
+
+        updateHandler.post(updateRunnable);
+    }
+
+    /**
+     * Update usage from recent UsageEvents (Digital Wellbeing method)
+     */
+    private void updateCurrentUsageFromEvents() {
+        long now = System.currentTimeMillis();
+        long lookbackTime = now - (60 * 1000); // Look back 1 minute for events
+
+        try {
+            UsageEvents usageEvents = usageStatsManager.queryEvents(lookbackTime, now);
+            UsageEvents.Event event = new UsageEvents.Event();
+
+            String latestForegroundApp = currentForegroundApp;
+            long latestForegroundTime = currentSessionStartTime;
+
+            // Process all events to find the most recent foreground app
+            while (usageEvents.hasNextEvent()) {
+                usageEvents.getNextEvent(event);
+
+                String packageName = event.getPackageName();
+                if (!shouldTrackApp(packageName))
+                    continue;
+
+                int eventType = event.getEventType();
+
+                if (eventType == UsageEvents.Event.ACTIVITY_RESUMED ||
+                        eventType == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                    // App came to foreground
+                    if (event.getTimeStamp() > latestForegroundTime) {
+                        latestForegroundApp = packageName;
+                        latestForegroundTime = event.getTimeStamp();
+                    }
+                } else if (eventType == UsageEvents.Event.ACTIVITY_PAUSED ||
+                        eventType == UsageEvents.Event.MOVE_TO_BACKGROUND) {
+                    // App went to background - add session time if this was the current app
+                    if (packageName.equals(currentForegroundApp) && currentSessionStartTime > 0) {
+                        long sessionTime = event.getTimeStamp() - currentSessionStartTime;
+                        addUsageTime(packageName, sessionTime);
+                    }
+                }
+            }
+
+            // Handle foreground app change
+            if (latestForegroundApp != null && !latestForegroundApp.equals(currentForegroundApp)) {
+                // End previous session
+                if (currentForegroundApp != null && currentSessionStartTime > 0) {
+                    long sessionTime = latestForegroundTime - currentSessionStartTime;
+                    addUsageTime(currentForegroundApp, sessionTime);
+                }
+
+                // Start new session
+                currentForegroundApp = latestForegroundApp;
+                currentSessionStartTime = latestForegroundTime;
+
+                Log.v(TAG, "🔄 Foreground app changed to: " + getAppName(latestForegroundApp));
+            }
+
+            // Add ongoing session time for current app
+            if (currentForegroundApp != null && currentSessionStartTime > 0) {
+                long ongoingSessionTime = now - currentSessionStartTime;
+                if (ongoingSessionTime > 0 && ongoingSessionTime < 300000) { // Max 5 minutes to prevent errors
+                    setCurrentUsageTime(currentForegroundApp, ongoingSessionTime);
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error updating from events: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Add usage time to an app's total
+     */
+    private void addUsageTime(String packageName, long timeMs) {
+        if (timeMs <= 0 || timeMs > 300000)
+            return; // Ignore invalid times (>5 min)
+
+        long currentTime = appUsageTimes.getOrDefault(packageName, 0L);
+        appUsageTimes.put(packageName, currentTime + timeMs);
+
+        Log.v(TAG, "⏱️ Added " + (timeMs / 1000) + "s to " + getAppName(packageName) +
+                " (total: " + ((currentTime + timeMs) / 1000) + "s)");
+    }
+
+    /**
+     * Set current usage time (for ongoing sessions)
+     */
+    private void setCurrentUsageTime(String packageName, long ongoingTimeMs) {
+        // This doesn't permanently add time, just shows current session
+        // Used for real-time display purposes
+    }
+
+    /**
+     * Check if app should be tracked (same criteria as Digital Wellbeing)
+     */
+    private boolean shouldTrackApp(String packageName) {
+        if (packageName == null || packageName.isEmpty())
+            return false;
+
+        // Exclude system packages
+        if (SYSTEM_PACKAGES_TO_EXCLUDE.contains(packageName))
+            return false;
+        if (packageName.startsWith("com.android.") && !packageName.equals("com.android.chrome"))
+            return false;
+        if (packageName.startsWith("com.google.android.") &&
+                !packageName.contains("youtube") && !packageName.contains("maps"))
+            return false;
+
+        try {
+            PackageManager pm = context.getPackageManager();
+            ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
+
+            // Only track user-installed apps or important system apps
+            boolean isSystemApp = (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            boolean isUpdatedSystemApp = (appInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0;
+
+            if (isSystemApp && !isUpdatedSystemApp) {
+                // Allow some important system apps
+                return packageName.contains("chrome") || packageName.contains("youtube") ||
+                        packageName.contains("maps") || packageName.contains("photos");
+            }
+
+            return true; // Track user apps and updated system apps
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Cache app name for display purposes
+     */
+    private void cacheAppName(String packageName) {
+        if (appNames.containsKey(packageName))
+            return;
+
+        try {
+            PackageManager pm = context.getPackageManager();
+            ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
+            String appName = pm.getApplicationLabel(appInfo).toString();
+            appNames.put(packageName, appName);
+        } catch (Exception e) {
+            appNames.put(packageName, packageName);
+        }
+    }
+
+    /**
+     * Get cached app name
+     */
+    private String getAppName(String packageName) {
+        return appNames.getOrDefault(packageName, packageName);
+    }
+
+    /**
+     * Sync data to Firebase if enough time has passed
+     */
+    private void syncToFirebaseIfNeeded() {
+        long now = System.currentTimeMillis();
+        if (now - lastFirebaseSync >= FIREBASE_SYNC_INTERVAL_MS) {
+        Log.d(TAG, "🔄 Force syncing usage data to Firebase");
+        syncToFirebase();
+    }
+
+    /**
+     * Stop tracking and cleanup
+     */
+    public void stopTracking() {
+        Log.d(TAG, "🛑 Stopping accurate usage tracking");
+
+        if (updateHandler != null && updateRunnable != null) {
+            updateHandler.removeCallbacks(updateRunnable);
+        }
+
+        // Final sync before stopping
+        syncToFirebase();
+
+        Log.d(TAG, "✅ Accurate usage tracking stopped");
+    }
+
+    /**
+     * Get current usage data (for immediate queries)
+     */
+    public Map<String, Long> getCurrentUsageData() {
+        return new HashMap<>(appUsageTimes);
+    }
+
+    /**
+     * Clear all usage data (for fresh start on reconnection)
+     */
+    public void clearAllData() {
+        Log.d(TAG, "🗑️ Clearing all usage tracking data");
+
+        appUsageTimes.clear();
+        appSessionStartTimes.clear();
+        currentForegroundApp = null;
+        currentSessionStartTime = 0;
+
+        // Clear Firebase data
+        Map<String, Object> clearData = new HashMap<>();
+        clearData.put("timestamp", System.currentTimeMillis());
+        clearData.put("device_id", deviceId);
+        clearData.put("total_usage_ms", 0);
+        clearData.put("apps", new HashMap<>());
+        clearData.put("cleared", true);
+
+        usageRef.setValue(clearData);
+
+        Log.d(TAG, "✅ All usage data cleared");
+    }
+}

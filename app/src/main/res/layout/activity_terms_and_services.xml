@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/neutral_50"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Back" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="Terms and Services"
+                android:textColor="@color/neutral_900"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Sentinel: The parental monitoring application"
+                        android:textColor="@color/primary_600"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="1. System Architecture and Technical Infrastructure"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="The Sentinel System operates on a distributed Firebase Real-time Database architecture with multi-node synchronization capabilities. The system employs advanced WebSocket connections for real-time data transmission, utilizing Google's Firebase Cloud Infrastructure with 99.99% uptime SLA. Our backend implements microservices architecture with containerized deployment using Docker and Kubernetes orchestration for scalability and fault tolerance."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="2. Advanced Monitoring Capabilities and Data Analytics"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our proprietary monitoring engine utilizes Android's UsageStatsManager API with deep system integration to capture granular application usage metrics, including foreground/background transitions, memory consumption patterns, network traffic analysis, and behavioral usage prediction algorithms. The system implements machine learning models for anomaly detection in usage patterns, providing predictive analytics for screen time optimization and application addiction prevention through advanced pattern recognition algorithms."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="3. Cryptographic Security and Authentication Protocols"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="All data transmissions are secured using AES-256-GCM encryption with Perfect Forward Secrecy (PFS) implementation through Elliptic Curve Diffie-Hellman Ephemeral (ECDHE) key exchange protocols. User authentication employs multi-factor authentication (MFA) with TOTP-based verification, OAuth 2.0 with PKCE extension, and biometric authentication integration using Android BiometricPrompt API with hardware security module (HSM) support for cryptographic key storage in Android Keystore."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="4. Real-time Communication and Synchronization"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="The application implements advanced WebSocket connections with automatic reconnection mechanisms, connection pooling, and load balancing across multiple Firebase regions. Our QR-code pairing system utilizes advanced computer vision algorithms with Reed-Solomon error correction codes for enhanced reliability. The system supports real-time bidirectional communication with sub-100ms latency through optimized TCP connection management and custom protocol buffer serialization."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="5. Advanced Device Management and Control Systems"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our comprehensive device management solution integrates with Android's Device Admin API, Accessibility Service framework, and Usage Access permissions for granular application control. The system implements advanced scheduling algorithms with cron-job expressions for time-based restrictions, geofencing capabilities using GPS and network-based location services, and intelligent focus mode with whitelist/blacklist management through deep packet inspection and application signature verification."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="6. Data Processing and Machine Learning Infrastructure"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our advanced analytics engine employs TensorFlow Lite models for on-device machine learning processing, implementing neural networks for behavior pattern recognition, usage prediction algorithms, and anomaly detection systems. The data processing pipeline utilizes Apache Kafka for real-time streaming analytics, Redis for in-memory caching, and MongoDB with sharding for scalable document storage. All machine learning models are trained using differential privacy techniques to ensure user anonymity while maintaining model accuracy."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="7. Network Security and Protocol Implementation"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="All network communications are secured through TLS 1.3 with certificate pinning, implementing HSTS (HTTP Strict Transport Security) and certificate transparency monitoring. Our API endpoints utilize RESTful architecture with GraphQL query optimization, rate limiting through token bucket algorithms, and DDoS protection via CloudFlare integration. The system implements zero-trust network architecture with micro-segmentation and continuous authentication verification."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="8. Advanced Privacy Protection and GDPR Compliance"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our privacy framework implements Privacy by Design principles with homomorphic encryption for computations on encrypted data, zero-knowledge proof protocols for authentication without data exposure, and advanced data minimization techniques. The system complies with GDPR, CCPA, and COPPA regulations through automated data retention policies, user consent management platforms, and comprehensive audit logging. Personal data is processed using federated learning techniques to maintain privacy while enabling collaborative intelligence."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="9. System Reliability and Fault Tolerance"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="The Monarch system implements advanced reliability patterns including Circuit Breaker pattern for fault isolation, Bulkhead pattern for resource segregation, and Retry with Exponential Backoff algorithms for transient failure handling. Our infrastructure utilizes multi-region deployment with active-active configuration, automated failover mechanisms, and chaos engineering practices for continuous resilience testing. The system maintains 99.99% uptime through redundant infrastructure and advanced monitoring with Prometheus and Grafana dashboards."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="10. Performance Optimization and Scalability"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our application employs advanced performance optimization techniques including lazy loading with pagination, image optimization through WebP format with progressive loading, and memory management through object pooling and garbage collection tuning. The backend utilizes horizontal pod autoscaling with Kubernetes HPA, database connection pooling with PgBouncer, and CDN optimization through edge caching with CloudFlare workers for global content delivery with sub-50ms response times."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="11. Advanced API Integration and Third-Party Services"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="The system integrates with multiple enterprise-grade APIs including Google Firebase SDK with advanced authentication flows, Appwrite Backend-as-a-Service with custom serverless functions, and specialized Android system APIs for deep device integration. Our microservices communicate through gRPC with protocol buffer serialization, implementing service mesh architecture with Istio for advanced traffic management, security policies, and observability across distributed components."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="12. Compliance and Regulatory Standards"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Monarch adheres to international security standards including ISO 27001 for information security management, SOC 2 Type II compliance for service organization controls, and NIST Cybersecurity Framework implementation. The application undergoes regular penetration testing by certified ethical hackers, vulnerability assessments using OWASP testing methodology, and code security analysis through static and dynamic application security testing (SAST/DAST) tools."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="13. Continuous Integration and Deployment"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our development pipeline implements GitOps methodology with automated testing suites including unit tests with JUnit, integration tests with Espresso, and end-to-end testing with Selenium WebDriver. The CI/CD pipeline utilizes GitHub Actions with secure secrets management, automated security scanning with SonarQube, and progressive deployment strategies including blue-green deployments and canary releases for zero-downtime updates."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="14. Technical Support and System Monitoring"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Our 24/7 technical support infrastructure includes advanced logging with structured logging using JSON format, distributed tracing with Jaeger for request flow analysis, and comprehensive metrics collection through Prometheus with custom business logic monitors. The system implements automated incident response with PagerDuty integration, smart alerting through machine learning-based anomaly detection, and comprehensive system health dashboards with real-time performance metrics and predictive maintenance capabilities."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@color/neutral_200" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Technical Contact and Support"
+                        android:textColor="@color/neutral_900"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="For technical inquiries, system architecture questions, API documentation, enterprise integration support, or advanced configuration assistance, please contact our technical team:\n\n• Technical Support: monarch.official2005@gmail.com\n• Enterprise Solutions: founder.monarch2007@gmail.com\n\nFor immediate technical support, include your device model, Android version, application version, and detailed error logs with your inquiry."
+                        android:textColor="@color/neutral_700"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Last updated: August 2025\nVersion: 2.1.0 (Build 21001)\n\nThis document contains comprehensive technical specifications and operational details of the Sentinel: The parental monitoring application. By utilizing this enterprise-grade solution, you acknowledge understanding of the complex technical infrastructure and advanced security implementations described herein."
+                        android:textColor="@color/neutral_600"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

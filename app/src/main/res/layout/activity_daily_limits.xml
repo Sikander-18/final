@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daily Usage Limits"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/neutral_900"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Device Info -->
+        <TextView
+            android:id="@+id/tvDeviceInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Device: "
+            android:textSize="16sp"
+            android:textColor="@color/neutral_700"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Current Usage Display -->
+        <TextView
+            android:id="@+id/tvCurrentUsage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Today's Usage:\nNo data available"
+            android:textSize="14sp"
+            android:textColor="@color/neutral_600"
+            android:background="@drawable/card_background"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Total Screen Time Limit -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total Screen Time Limit"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/neutral_900"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etTotalScreenTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="HH:MM (e.g., 06:00 for 6 hours)"
+            android:inputType="time"
+            android:background="@drawable/input_background"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- App Limits Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Individual App Limits"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/neutral_900"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/llAppLimits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Category Limits Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category Limits"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/neutral_900"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/llCategoryLimits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btnClearLimits"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Clear All"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_secondary" />
+
+            <Button
+                android:id="@+id/btnSaveLimits"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save Limits"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/button_primary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView> 
