@@ -425,25 +425,35 @@ public class VoiceAssistantActivity extends AppCompatActivity implements Assista
         ref.setValue(rule)
                 .addOnSuccessListener(unused -> {
                     writeAudit(rule);
+                    long now = System.currentTimeMillis();
+                    boolean isFutureStart = rule.startEpochMs > (now + 30000); // More than 30s in future
 
                     if (ScheduleSpec.TYPE_IMMEDIATE.equals(rule.scheduleType)) {
-                        // ── IMMEDIATE: Dispatch BlockCommands directly (same as dashboard) ──
+                        // ── IMMEDIATE: Dispatch NOW ──
                         dispatchBlockCommandsDirectly(rule, "block".equals(rule.action));
                         addBotMessage("✅ Done! " + (rule.action.equals("block") ? "Blocked" : "Unblocked")
                                 + " on " + childDeviceName + "'s device.");
                     } else if (ScheduleSpec.TYPE_TIME_RANGE.equals(rule.scheduleType)) {
-                        // ── RANGE: Dispatch start action now, schedule end via alarm ──
-                        dispatchBlockCommandsDirectly(rule, "block".equals(rule.action));
-                        // Schedule the reverse action at the end time
-                        VoiceAssistantAlarmScheduler.scheduleRule(this, rule,
-                                VoiceAssistantAlarmScheduler.PHASE_END, rule.endEpochMs);
-                        addBotMessage("✅ Done! Rule active on " + childDeviceName
-                                + "'s device. Will auto-reverse at the end time.");
+                        // ── RANGE: Start now or in future? ──
+                        if (isFutureStart) {
+                            // Schedule START
+                            VoiceAssistantAlarmScheduler.scheduleRule(this, rule,
+                                    VoiceAssistantAlarmScheduler.PHASE_START, rule.startEpochMs);
+                            addBotMessage("✅ Scheduled! Will start at " + 
+                                    formatTime(rule.startEpochMs) + " and end at " + formatTime(rule.endEpochMs));
+                        } else {
+                            // Start NOW
+                            dispatchBlockCommandsDirectly(rule, "block".equals(rule.action));
+                            // Schedule END
+                            VoiceAssistantAlarmScheduler.scheduleRule(this, rule,
+                                    VoiceAssistantAlarmScheduler.PHASE_END, rule.endEpochMs);
+                            addBotMessage("✅ Done! Rule active. Will auto-reverse at " + formatTime(rule.endEpochMs));
+                        }
                     } else {
-                        // ── SCHEDULED (at_time, after_duration): Use AlarmManager ──
+                        // ── SCHEDULED (at_time, after_duration) ──
                         VoiceAssistantAlarmScheduler.scheduleRule(this, rule,
                                 VoiceAssistantAlarmScheduler.PHASE_START, rule.startEpochMs);
-                        addBotMessage("✅ Scheduled! Will execute on " + childDeviceName + "'s device.");
+                        addBotMessage("✅ Scheduled! Will execute at the target time.");
                     }
                 })
                 .addOnFailureListener(e ->
@@ -454,6 +464,12 @@ public class VoiceAssistantActivity extends AppCompatActivity implements Assista
      * Dispatch BlockCommand objects directly to Firebase — same path the dashboard uses.
      * The child's RemoteBlockService listens on block_commands/{childId} and picks these up.
      */
+    private String formatTime(long epochMs) {
+        if (epochMs <= 0) return "unknown";
+        return new java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
+                .format(new java.util.Date(epochMs));
+    }
+
     private void dispatchBlockCommandsDirectly(AssistantRule rule, boolean block) {
         DatabaseReference root = FirebaseDatabase.getInstance().getReference("block_commands");
         for (String childId : rule.targetChildIds) {

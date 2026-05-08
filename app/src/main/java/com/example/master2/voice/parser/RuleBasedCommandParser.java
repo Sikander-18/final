@@ -36,9 +36,7 @@ public class RuleBasedCommandParser {
             return;
         }
         if (timeResult.isRelative) {
-            long delayMs = timeResult.startTimeMs - System.currentTimeMillis();
-            intent.scheduleSpec.scheduleType = ScheduleSpec.TYPE_AFTER_DURATION;
-            intent.scheduleSpec.delayMs = Math.max(delayMs, 0L);
+            intent.scheduleSpec.scheduleType = ScheduleSpec.TYPE_AT_TIME; // Treat as AT_TIME for better reliability
             intent.scheduleSpec.startEpochMs = timeResult.startTimeMs;
             return;
         }
@@ -52,7 +50,8 @@ public class RuleBasedCommandParser {
 
     private void parseApps(VoiceCommandIntent intent) {
         String text = intent.normalizedText;
-        text = text.replaceAll("\\b(block|unblock|lock|unlock|at|after|from|to|se|tak|and|am|pm|night|morning|baje|minute|minutes|hour|hours|ghante|kar)\\b",
+        // Strict removal list based on provided intent/time keywords
+        text = text.replaceAll("\\b(block|lock|restrict|stop|disable|pause|unblock|unlock|allow|enable|resume|start|open|bandh|band|rok|roko|kar|do|khol|kholo|chalu|access|after|in|later|baad|minute|hour|ghante|ghanta|from|to|between|till|until|at|baje|aur|and|am|pm|night|morning|shaam|raat|subah)\\b",
                 " ");
         text = text.replaceAll("\\d{1,2}(:\\d{2})?", " ");
         text = text.replaceAll("\\s+", " ").trim();

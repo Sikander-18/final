@@ -1,7 +1,6 @@
 package com.example.master2.voice.parser;
 
 import com.example.master2.voice.model.VoiceCommandIntent;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,19 +18,34 @@ public final class IntentDetector {
     }
 
     static {
+        // English BLOCK
         put("block", VoiceCommandIntent.ACTION_BLOCK, 1.0f);
         put("lock", VoiceCommandIntent.ACTION_BLOCK, 0.9f);
-        put("bandh", VoiceCommandIntent.ACTION_BLOCK, 0.8f);
-        put("band", VoiceCommandIntent.ACTION_BLOCK, 0.8f);
-        put("rok", VoiceCommandIntent.ACTION_BLOCK, 0.7f);
         put("restrict", VoiceCommandIntent.ACTION_BLOCK, 1.0f);
+        put("stop", VoiceCommandIntent.ACTION_BLOCK, 0.8f);
+        put("disable", VoiceCommandIntent.ACTION_BLOCK, 0.9f);
+        put("pause", VoiceCommandIntent.ACTION_BLOCK, 0.8f);
 
+        // Hindi/Hinglish BLOCK
+        put("bandh", VoiceCommandIntent.ACTION_BLOCK, 1.0f);
+        put("band", VoiceCommandIntent.ACTION_BLOCK, 1.0f);
+        put("rok", VoiceCommandIntent.ACTION_BLOCK, 0.9f);
+        put("roko", VoiceCommandIntent.ACTION_BLOCK, 0.9f);
+
+        // English UNBLOCK
         put("unblock", VoiceCommandIntent.ACTION_UNBLOCK, 1.0f);
         put("unlock", VoiceCommandIntent.ACTION_UNBLOCK, 1.0f);
         put("allow", VoiceCommandIntent.ACTION_UNBLOCK, 0.9f);
-        put("khol", VoiceCommandIntent.ACTION_UNBLOCK, 0.9f);
-        put("chalu", VoiceCommandIntent.ACTION_UNBLOCK, 0.8f);
+        put("enable", VoiceCommandIntent.ACTION_UNBLOCK, 0.9f);
+        put("resume", VoiceCommandIntent.ACTION_UNBLOCK, 0.8f);
+        put("start", VoiceCommandIntent.ACTION_UNBLOCK, 0.7f);
         put("open", VoiceCommandIntent.ACTION_UNBLOCK, 0.5f);
+
+        // Hindi/Hinglish UNBLOCK
+        put("khol", VoiceCommandIntent.ACTION_UNBLOCK, 1.0f);
+        put("kholo", VoiceCommandIntent.ACTION_UNBLOCK, 1.0f);
+        put("chalu", VoiceCommandIntent.ACTION_UNBLOCK, 0.9f);
+        put("access", VoiceCommandIntent.ACTION_UNBLOCK, 0.8f);
     }
 
     private IntentDetector() {
@@ -53,7 +67,7 @@ public final class IntentDetector {
             if (weighted == null) {
                 continue;
             }
-            float current = scoreByAction.containsKey(weighted.action) ? scoreByAction.get(weighted.action) : 0f;
+            float current = scoreByAction.getOrDefault(weighted.action, 0f);
             scoreByAction.put(weighted.action, Math.max(current, weighted.weight));
         }
 
@@ -61,10 +75,11 @@ public final class IntentDetector {
         float bestScore = 0.0f;
         for (Map.Entry<String, Float> entry : scoreByAction.entrySet()) {
             if (entry.getValue() > bestScore) {
-                bestAction = entry.getKey();
                 bestScore = entry.getValue();
+                bestAction = entry.getKey();
             }
         }
+
         return new IntentResult(bestAction, bestScore);
     }
 }
