@@ -108,7 +108,9 @@ public class BlockService extends AccessibilityService {
     // 🔄 SYNC: Frequent usage upload
     private Handler syncHandler;
     private Runnable syncRunnable;
-    private static final long SYNC_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes
+    private static final long SYNC_INTERVAL_MS = 60 * 1000; // Faster sync: 1 minute
+    private static final long FULL_SYNC_INTERVAL_MS = 30 * 60 * 1000; // Full sync every 30 mins
+    private long lastFullSyncTime = 0;
 
     private void startFrequentUsageSync() {
         Log.d(TAG, "🔄 Starting frequent usage sync (2 min interval)");
@@ -138,17 +140,28 @@ public class BlockService extends AccessibilityService {
 
         try {
             Log.d(TAG, "📤 Performing frequent usage uploads...");
-            String deviceId = sessionManager.getChildDeviceId();
-            if (deviceId != null && !deviceId.isEmpty()) {
-                com.example.master2.utils.SUsageDataManager.getInstance(this).uploadToFirebase(deviceId, null);
+                String deviceId = sessionManager.getChildDeviceId();
+                if (deviceId != null && !deviceId.isEmpty()) {
+                    long now = System.currentTimeMillis();
+                    boolean isFullSync = (now - lastFullSyncTime) > FULL_SYNC_INTERVAL_MS;
+                    
+                    if (isFullSync) {
+                        Log.d(TAG, "📤 Performing FULL weekly usage upload...");
+                        com.example.master2.utils.SUsageDataManager.getInstance(this).uploadWeeklyToFirebase(deviceId, null);
+                        lastFullSyncTime = now;
+                    } else {
+                        Log.d(TAG, "📤 Performing lightweight DAILY usage upload...");
+                        // No icons for daily sync to save bandwidth
+                        com.example.master2.utils.SUsageDataManager.getInstance(this).uploadTodayToFirebase(deviceId, false, null);
+                    }
 
-                // Update heartbeat clearly
-                com.google.firebase.database.FirebaseDatabase.getInstance()
-                        .getReference("susage_data")
-                        .child(deviceId)
-                        .child("heartbeat")
-                        .setValue(System.currentTimeMillis());
-            }
+                    // Update heartbeat clearly
+                    com.google.firebase.database.FirebaseDatabase.getInstance()
+                            .getReference("susage_data")
+                            .child(deviceId)
+                            .child("heartbeat")
+                            .setValue(System.currentTimeMillis());
+                }
         } catch (Exception e) {
             Log.e(TAG, "❌ Sync failed: " + e.getMessage());
         }
@@ -374,6 +387,9 @@ public class BlockService extends AccessibilityService {
             if (!currentApp.equals(currentForegroundApp)) {
                 currentForegroundApp = currentApp;
                 broadcastForegroundApp(currentApp);
+                
+                // 🔥 IMMEDIATE SYNC: App switched, update parent dashboard NOW
+                performUsageUpload();
             }
         }
     }

@@ -349,38 +349,77 @@ public class SUsageDataManager {
     }
 
     /**
-     * Upload weekly usage data to Firebase
+     * Optimized upload: Only upload TODAY'S data to save bandwidth and improve sync speed.
+     * Icons are only uploaded if they are missing or if requested.
      */
-    public void uploadToFirebase(String deviceId, final OnUploadCompleteListener listener) {
-        if (deviceId == null || deviceId.isEmpty()) {
-            if (listener != null)
-                listener.onError("Device ID is empty");
-            return;
-        }
+    public void uploadTodayToFirebase(String deviceId, boolean includeIcons, final OnUploadCompleteListener listener) {
+        if (deviceId == null || deviceId.isEmpty()) return;
 
-        Log.d(TAG, "📤 Uploading usage data for device: " + deviceId);
-
-        List<SUsageDailyData> weeklyUsage = getWeeklyUsage();
-
-        if (weeklyUsage == null || weeklyUsage.isEmpty()) {
-            Log.w(TAG, "⚠️ No usage data to upload");
-            if (listener != null)
-                listener.onError("No usage data available");
-            return;
-        }
-
+        SUsageDailyData today = getTodayUsage();
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("susage_data")
                 .child(deviceId);
 
-        // Create upload data - use Map for proper serialization
         Map<String, Object> uploadData = new HashMap<>();
         uploadData.put("lastUpdated", System.currentTimeMillis());
 
-        // Convert each daily data to a map for Firebase
+        Map<String, Object> dailyMap = new HashMap<>();
+        dailyMap.put("dateKey", today.getDateKey());
+        dailyMap.put("totalScreenTimeMillis", today.getTotalScreenTimeMillis());
+        dailyMap.put("communicationTimeMillis", today.getCommunicationTimeMillis());
+        dailyMap.put("entertainmentTimeMillis", today.getEntertainmentTimeMillis());
+        dailyMap.put("gamesTimeMillis", today.getGamesTimeMillis());
+        dailyMap.put("otherTimeMillis", today.getOtherTimeMillis());
+        dailyMap.put("lastUpdated", today.getLastUpdated());
+
+        Map<String, Object> appsMap = new HashMap<>();
+        for (SUsageAppInfo app : today.getAppList()) {
+            Map<String, Object> appMap = new HashMap<>();
+            appMap.put("packageName", app.getPackageName());
+            appMap.put("appName", app.getAppName());
+            appMap.put("usageTimeMillis", app.getUsageTimeMillis());
+            appMap.put("category", app.getCategory());
+            
+            if (includeIcons && app.getIconBase64() != null) {
+                appMap.put("iconBase64", app.getIconBase64());
+            }
+            
+            appsMap.put(sanitizeFirebaseKey(app.getPackageName()), appMap);
+        }
+        dailyMap.put("apps", appsMap);
+
+        // Update specifically today's data node
+        uploadData.put("weeklyData/" + today.getDateKey(), dailyMap);
+
+        ref.updateChildren(uploadData)
+                .addOnSuccessListener(aVoid -> {
+                    if (listener != null) listener.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    if (listener != null) listener.onError(e.getMessage());
+                });
+    }
+
+    /**
+     * Legacy method: still available but optimized to call internal logic
+     */
+    public void uploadToFirebase(String deviceId, final OnUploadCompleteListener listener) {
+        uploadWeeklyToFirebase(deviceId, listener);
+    }
+
+    public void uploadWeeklyToFirebase(String deviceId, final OnUploadCompleteListener listener) {
+        if (deviceId == null || deviceId.isEmpty()) return;
+
+        List<SUsageDailyData> weeklyUsage = getWeeklyUsage();
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("susage_data")
+                .child(deviceId);
+
+        Map<String, Object> uploadData = new HashMap<>();
+        uploadData.put("lastUpdated", System.currentTimeMillis());
+
         Map<String, Object> weeklyDataMap = new HashMap<>();
         for (SUsageDailyData daily : weeklyUsage) {
-            // Convert to map to ensure proper serialization
             Map<String, Object> dailyMap = new HashMap<>();
             dailyMap.put("dateKey", daily.getDateKey());
             dailyMap.put("totalScreenTimeMillis", daily.getTotalScreenTimeMillis());
@@ -390,48 +429,32 @@ public class SUsageDataManager {
             dailyMap.put("otherTimeMillis", daily.getOtherTimeMillis());
             dailyMap.put("lastUpdated", daily.getLastUpdated());
 
-            // Convert app list to map - SANITIZE KEYS for Firebase!
-            // Firebase does NOT allow '.', '/', '#', '$', '[', ']' in keys
             Map<String, Object> appsMap = new HashMap<>();
             for (SUsageAppInfo app : daily.getAppList()) {
                 Map<String, Object> appMap = new HashMap<>();
-                appMap.put("packageName", app.getPackageName()); // Store original name in value
+                appMap.put("packageName", app.getPackageName());
                 appMap.put("appName", app.getAppName());
                 appMap.put("usageTimeMillis", app.getUsageTimeMillis());
                 appMap.put("category", app.getCategory());
-                // Add icon as Base64 for parent to display
-                if (app.getIconBase64() != null && !app.getIconBase64().isEmpty()) {
+                if (app.getIconBase64() != null) {
                     appMap.put("iconBase64", app.getIconBase64());
                 }
-                // SANITIZE the key - replace dots with underscores
-                String safeKey = sanitizeFirebaseKey(app.getPackageName());
-                appsMap.put(safeKey, appMap);
+                appsMap.put(sanitizeFirebaseKey(app.getPackageName()), appMap);
             }
             dailyMap.put("apps", appsMap);
-
             weeklyDataMap.put(daily.getDateKey(), dailyMap);
         }
         uploadData.put("weeklyData", weeklyDataMap);
 
-        Log.d(TAG, "📊 Uploading " + weeklyUsage.size() + " days of data");
-
-        // Use updateChildren() instead of setValue() to preserve heartbeat
         ref.updateChildren(uploadData)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "✅ Usage data uploaded successfully (" + weeklyUsage.size() + " days)");
-                    if (listener != null)
-                        listener.onSuccess();
+                    if (listener != null) listener.onSuccess();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Failed to upload usage data: " + e.getMessage());
-                    if (listener != null)
-                        listener.onError(e.getMessage());
+                    if (listener != null) listener.onError(e.getMessage());
                 });
     }
 
-    /**
-     * Get total weekly screen time
-     */
     public long getTotalWeeklyScreenTime() {
         List<SUsageDailyData> weeklyData = getWeeklyUsage();
         long total = 0;
