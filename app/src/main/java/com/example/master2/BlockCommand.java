@@ -9,6 +9,8 @@ public class BlockCommand {
     public boolean blockStatus;
     public long timestamp;
     public boolean executed;
+    public String source;
+    public String sourceRuleId;
 
     public BlockCommand() {
         // Default constructor for Firebase
@@ -24,5 +26,15 @@ public class BlockCommand {
         this.blockStatus = blockStatus;
         this.timestamp = System.currentTimeMillis();
         this.executed = false;
+        this.source = "manual";
+        this.sourceRuleId = "";
+    }
+
+    public BlockCommand(String targetDeviceId, String controllerDeviceId,
+                        String packageName, String appName, boolean blockStatus,
+                        String source, String sourceRuleId) {
+        this(targetDeviceId, controllerDeviceId, packageName, appName, blockStatus);
+        this.source = source;
+        this.sourceRuleId = sourceRuleId == null ? "" : sourceRuleId;
     }
 }

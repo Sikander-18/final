@@ -244,6 +244,12 @@ public class BlockService extends AccessibilityService {
                     // Reload blocked apps immediately
                     reloadBlockedApps();
 
+                    // 🔥 IMMEDIATE KILL: Check if the currently running app was just blocked
+                    enforceBlockOnCurrentApp();
+
+                    // FORCE RE-CHECK: Add a small delay for background processing
+                    accuracyHandler.postDelayed(() -> enforceBlockOnCurrentApp(), 500);
+
                     // Show feedback to user
                     String message = blockedCount > 0 ? "🚫 " + blockedCount + " apps now blocked"
                             : "✅ All apps unblocked";
@@ -284,6 +290,45 @@ public class BlockService extends AccessibilityService {
         }
     }
 
+    /**
+     * 🔥 IMMEDIATE KILL: If the app currently in the foreground is blocked,
+     * force-kill it RIGHT NOW — don't wait for the next app switch event.
+     * This is called when a new block command arrives via broadcast.
+     */
+    private void enforceBlockOnCurrentApp() {
+        if (isParentDevice) return;
+
+        try {
+            // Get the app that is currently on screen
+            String foreground = getCurrentForegroundAppFromUsageStats();
+            if (foreground == null || foreground.isEmpty()) return;
+
+            // Skip system apps and our own app
+            if (shouldSkipForBlocking(foreground)) return;
+            if (foreground.contains("com.example.master2")) return;
+
+            // Check if this foreground app is now blocked
+            SharedPreferences freshPrefs = getSharedPreferences("blocked_apps", MODE_PRIVATE);
+            if (freshPrefs.getBoolean(foreground, false)) {
+                Log.w(TAG, "🔥 IMMEDIATE KILL: Foreground app '" + foreground + "' is BLOCKED — killing NOW!");
+                blockAppEnhanced(foreground);
+
+                // Extra safety: re-check after a short delay in case the app resists
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    String stillRunning = getCurrentForegroundAppFromUsageStats();
+                    if (foreground.equals(stillRunning)) {
+                        Log.w(TAG, "🔥 RE-KILL: App '" + foreground + "' survived — blocking again!");
+                        blockAppEnhanced(foreground);
+                    }
+                }, 800);
+            } else {
+                Log.d(TAG, "✅ Foreground app '" + foreground + "' is NOT blocked — no action needed.");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error in enforceBlockOnCurrentApp: " + e.getMessage());
+        }
+    }
+
     private void startAccuracyMonitoring() {
         accuracyRunnable = new Runnable() {
             @Override
@@ -296,21 +341,40 @@ public class BlockService extends AccessibilityService {
     }
 
     private void checkCurrentForegroundApp() {
-        String currentApp = getCurrentForegroundAppFromUsageStats();
-        if (currentApp != null && !currentApp.equals(currentForegroundApp)) {
-            currentForegroundApp = currentApp;
+        String currentApp = null;
+        
+        // 🚀 INSTANT DETECTION: Use Accessibility window first (faster than UsageStats)
+        try {
+            AccessibilityNodeInfo root = getRootInActiveWindow();
+            if (root != null) {
+                if (root.getPackageName() != null) {
+                    currentApp = root.getPackageName().toString();
+                }
+                root.recycle();
+            }
+        } catch (Exception ignored) {}
 
-            // 🔧 AGGRESSIVE BLOCKING: Check if this app should be blocked
+        // Fallback to UsageStats if Accessibility fails
+        if (currentApp == null) {
+            currentApp = getCurrentForegroundAppFromUsageStats();
+        }
+
+        if (currentApp != null) {
+            // 🛡️ CONTINUOUS ENFORCEMENT: Check if app is blocked regardless of whether it's "new"
             if (!isParentDevice && !shouldSkipForBlocking(currentApp)) {
                 SharedPreferences freshPrefs = getSharedPreferences("blocked_apps", MODE_PRIVATE);
                 if (freshPrefs.getBoolean(currentApp, false)) {
-                    Log.w(TAG, "⚡ AGGRESSIVE: Blocked app detected in 100ms check: " + currentApp);
+                    Log.w(TAG, "⚡ CONTINUOUS KILL: Blocked app detected: " + currentApp);
                     blockAppEnhanced(currentApp);
-                    return; // Don't broadcast blocked app
+                    return; 
                 }
             }
 
-            broadcastForegroundApp(currentApp);
+            // Only broadcast and update state if the app actually changed
+            if (!currentApp.equals(currentForegroundApp)) {
+                currentForegroundApp = currentApp;
+                broadcastForegroundApp(currentApp);
+            }
         }
     }
 

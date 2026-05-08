@@ -75,6 +75,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.master2.utils.LoadingDialogManager;
+import com.example.master2.voice.VoiceAssistantActivity;
 
 public class ParentDashboardActivity extends AppCompatActivity {
     private static final String TAG = "ParentDashboard";
@@ -423,6 +424,7 @@ public class ParentDashboardActivity extends AppCompatActivity {
         // Quick Actions
         // View cardQrAction = findViewById(R.id.cardQrAction); // Removed from XML
         View cardAppLimitsAction = findViewById(R.id.cardAppLimitsAction);
+        View cardVoiceAssistantAction = findViewById(R.id.cardVoiceAssistantAction);
         // View cardSettingsAction = findViewById(R.id.cardSettingsAction); // Removed
 
         /*
@@ -464,6 +466,21 @@ public class ParentDashboardActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "Please select a device first", Toast.LENGTH_SHORT).show();
                 }
+            });
+        }
+
+        if (cardVoiceAssistantAction != null) {
+            cardVoiceAssistantAction.setOnClickListener(v -> {
+                if (currentChildDeviceId == null || currentChildDeviceId.isEmpty()) {
+                    Toast.makeText(this, "Please select a device first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(this, VoiceAssistantActivity.class);
+                intent.putExtra("childDeviceId", currentChildDeviceId);
+                intent.putExtra("deviceName",
+                        (currentChildUserName != null && !currentChildUserName.isEmpty())
+                                ? currentChildUserName : currentChildDeviceName);
+                startActivity(intent);
             });
         }
 

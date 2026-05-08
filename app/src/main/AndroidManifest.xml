@@ -44,6 +44,9 @@
     
     <!-- Permission for alarm manager -->
     <uses-permission android:name="android.permission.SET_ALARM" />
+
+    <!-- Permission for voice assistant speech-to-text -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
 
 
@@ -272,6 +275,12 @@
             android:label="Timer Management"
             android:theme="@style/Theme.Master2.NoActionBar" />
 
+        <activity
+            android:name=".voice.VoiceAssistantActivity"
+            android:exported="false"
+            android:label="Voice Assistant"
+            android:theme="@style/Theme.Master2.NoActionBar" />
+
         <!-- App Blocking Activity -->
         <activity
             android:name=".AppBlockActivity"
@@ -452,6 +461,11 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".voice.VoiceAssistantAlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
 
 
 

@@ -1,5 +1,6 @@
 package com.example.master2;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -664,6 +665,11 @@ public class RemoteBlockService extends Service {
         // 🔧 IMMEDIATE UPDATE FIX: Broadcast to BlockService immediately
         broadcastBlockedAppsUpdate();
 
+        // 🔥 IMMEDIATE KILL: If blocking, force-kill the app if it's currently running
+        if (command.blockStatus) {
+            forceKillIfForeground(command.packageName);
+        }
+
         // Mark command as executed
         command.executed = true;
         blockCommandsRef.child(myDeviceId).child(command.commandId)
@@ -683,6 +689,49 @@ public class RemoteBlockService extends Service {
     }
 
     /**
+     * 🔥 Force-kill the given app if it's currently the foreground app.
+     * Uses HOME action + killBackgroundProcesses + force-stop for maximum effectiveness.
+     */
+    private void forceKillIfForeground(String packageName) {
+        try {
+            android.app.usage.UsageStatsManager usm =
+                    (android.app.usage.UsageStatsManager) getSystemService(USAGE_STATS_SERVICE);
+            if (usm == null) return;
+
+            long now = System.currentTimeMillis();
+            android.app.usage.UsageEvents events = usm.queryEvents(now - 3000, now);
+            android.app.usage.UsageEvents.Event event = new android.app.usage.UsageEvents.Event();
+            String lastResumed = null;
+
+            while (events.hasNextEvent()) {
+                events.getNextEvent(event);
+                if (event.getEventType() == android.app.usage.UsageEvents.Event.ACTIVITY_RESUMED) {
+                    lastResumed = event.getPackageName();
+                }
+            }
+
+            if (packageName.equals(lastResumed)) {
+                Log.w(TAG, "🔥 FORCE KILL: '" + packageName + "' is in foreground — killing immediately!");
+
+                // Kill background processes
+                ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+                if (am != null) {
+                    am.killBackgroundProcesses(packageName);
+                }
+
+                // Force stop (works on rooted/OEM devices)
+                try {
+                    Runtime.getRuntime().exec("am force-stop " + packageName);
+                } catch (Exception ignored) {}
+
+                Log.d(TAG, "✅ Force kill executed for: " + packageName);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error in forceKillIfForeground: " + e.getMessage());
+        }
+    }
+
+    /**
      * 🔧 IMMEDIATE UPDATE: Broadcast to BlockService that blocked apps list changed
      */
     private void broadcastBlockedAppsUpdate() {
@@ -696,10 +745,11 @@ public class RemoteBlockService extends Service {
                 }
             }
 
-            // Send broadcast to BlockService
+            // Send broadcast to BlockService with FOREGROUND priority
             Intent broadcastIntent = new Intent("com.example.master2.BLOCKED_APPS_UPDATED");
             broadcastIntent.putExtra("blocked_count", blockedCount);
             broadcastIntent.setPackage(getPackageName()); // Explicit package for security
+            broadcastIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND | Intent.FLAG_RECEIVER_REPLACE_PENDING);
             sendBroadcast(broadcastIntent);
 
             Log.d(TAG, "📡 Broadcasted blocked apps update - count: " + blockedCount);
