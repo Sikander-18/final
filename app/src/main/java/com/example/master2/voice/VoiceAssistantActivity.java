@@ -40,7 +40,8 @@ import com.example.master2.voice.model.ConflictResult;
 import com.example.master2.voice.model.ResolvedAppTarget;
 import com.example.master2.voice.model.ScheduleSpec;
 import com.example.master2.voice.model.VoiceCommandIntent;
-import com.example.master2.voice.parser.RuleBasedCommandParser;
+import com.example.master2.voice.parser.CommandPipeline;
+import com.example.master2.voice.dictionary.DictionaryManager;
 import com.example.master2.voice.resolver.VoiceAppResolver;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -72,7 +73,7 @@ public class VoiceAssistantActivity extends AppCompatActivity implements Assista
     private final List<AssistantChatMessage> messageList = new ArrayList<>();
 
     // Parser (existing Final logic)
-    private final RuleBasedCommandParser parser = new RuleBasedCommandParser();
+    private final CommandPipeline parser = new CommandPipeline();
     private final VoiceAppResolver appResolver = new VoiceAppResolver();
     private final VoiceAssistantConflictDetector conflictDetector = new VoiceAssistantConflictDetector();
 
@@ -111,6 +112,9 @@ public class VoiceAssistantActivity extends AppCompatActivity implements Assista
             finish();
             return;
         }
+
+        // Initialize dictionaries with child device ID for Firebase sync
+        DictionaryManager.getInstance().init(currentChildId);
 
         initViews();
         setupSpeechLauncher();
@@ -268,7 +272,7 @@ public class VoiceAssistantActivity extends AppCompatActivity implements Assista
         }
 
         // Parse using Final's existing parser
-        VoiceCommandIntent intent = parser.parse(text);
+        VoiceCommandIntent intent = parser.process(text);
 
         if (!intent.valid) {
             addBotMessage("I didn't quite understand that. Try saying \"Block Instagram\" or \"Lock YouTube at 10 pm\".");
